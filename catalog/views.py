@@ -3,12 +3,23 @@ from django.shortcuts import render
 
 # Create your views here.
 def index(request):
+    check_info(request)
     return render(request, 'catalog/home.html')
 
 
 def home(request):
+    check_info(request)
     return render(request, 'catalog/home.html')
 
 
 def contacts(request):
+    check_info(request)
     return render(request, 'catalog/contacts.html')
+
+
+def check_info(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        name = request.POST.get('name')
+        print(f'{name.title()}\n'
+              f'E-mail: {email}')

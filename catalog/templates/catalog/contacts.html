@@ -12,7 +12,7 @@
 <nav class="navbar bg-dark bg-gradient">
     <div class="container-fluid">
         <a class="navbar-brand text-light" href="{% url 'home' %}">
-            <img src="{% static 'image/icon.png' %}" alt="Logo" width="30" height="24"
+            <img src="{% static 'image/icon.png' %}" alt="Logo" width="40" height="34"
                  class="d-inline-block align-text-top">
             Aperol
         </a>
@@ -37,25 +37,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">О компании</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
                 </ul>
-                <form class="d-flex mt-3" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                 <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput" class="form-label">E-mail</label>
+                                <input type="email" name="email" class="form-control" id="formGroupExampleInput"
+                                       placeholder="ivan.ivanov@gmail.com"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput2" class="form-label">ФИО</label>
+                                <input type="text" name="name" class="form-control" id="formGroupExampleInput2"
+                                       placeholder="Иванов Иван Иванович"/>
+                            </div>
+                            <input type="submit" class="btn btn-secondary" value="Отправить"/>
+                        </form>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
