@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Information</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar bg-dark bg-gradient">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light" href="{% url 'home' %}">
+            <img src="{% static 'image/icon.png' %}" alt="Logo" width="40" height="34"
+                 class="d-inline-block align-text-top">
+            Aperol
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header bg-dark bg-gradient">
+                <h5 class="offcanvas-title text-light" id="offcanvasNavbarLabel">Меню</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'contacts' %}">☎️Контактная
+                            информация</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">О компании</a>
+                    </li>
+                </ul>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput" class="form-label">E-mail</label>
+                                <input type="email" name="email" class="form-control" id="formGroupExampleInput"
+                                       placeholder="ivan.ivanov@gmail.com"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput2" class="form-label">ФИО</label>
+                                <input type="text" name="name" class="form-control" id="formGroupExampleInput2"
+                                       placeholder="Иванов Иван Иванович"/>
+                            </div>
+                            <input type="submit" class="btn btn-secondary" value="Отправить"/>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h1>Наши контакты</h1>
+    <p>
+    <div class="card">
+        <div class="card-body">
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col">
+                        <div class="fw-bold">🏢Название организации:</div>
+                        "Aperol4ic"
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">📍Адрес:</div>
+                        г. Москва, ул. Примерная, д. 123, офис 45
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">☎️Телефон:</div>
+                        +7 (495) 123-45-67
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>
+    <p class="d-inline-flex gap-1">
+        <a class="btn btn btn-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button"
+           aria-expanded="false" aria-controls="collapseExample">
+            О нас
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            ООО "Aperol4ic" – это престижная коктейльная компания, специализирующаяся на создании уникальных и
+            оригинальных коктейлей для самых изысканных вкусов. Наша цель – предоставить нашим клиентам неповторимый
+            опыт, наполняя каждый коктейль искусством и креативностью.
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>
