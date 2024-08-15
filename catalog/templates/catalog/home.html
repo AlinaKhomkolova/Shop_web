@@ -19,6 +19,20 @@
                  class="d-inline-block align-text-top">
             Aperol
         </a>
+
+        <div class="dropdown me-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Фильтр по категории
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="categoryDropdown">
+                {% for category in categories %}
+                <li>
+                    <a class="dropdown-item" href="?category={{ category.id }}">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -50,7 +64,7 @@
                                        placeholder="ivan.ivanov@gmail.com"/>
                             </div>
                             <div class="mb-3">
-                                <label for="formGroupExampleInput2" class="form-label">ФИО</label>
+                                <label for="formGroupExampleInput2" class="form-label">Имя</label>
                                 <input type="text" name="name" class="form-control" id="formGroupExampleInput2"
                                        placeholder="Иванов Иван Иванович"/>
                             </div>
@@ -61,63 +75,37 @@
                 </div>
             </div>
         </div>
-
     </div>
 </nav>
+
 <div class="container text-center mt-5">
     <h1>Меню</h1>
 </div>
+
 <div class="container mt-5">
     <div class="row">
+        {% for cocktail in cocktails %}
         <div class="col-md-6 mb-3">
             <div class="card text-bg-light mb-3" style="height: 100%;">
                 <div class="row g-0">
                     <div class="col-md-3">
-                        <img src="{% static 'image/Barberry_spritz.png' %}" class="img-fluid rounded-start">
+                        {% if cocktail.image %}
+                        <img src="{{ cocktail.image.url }}" class="img-fluid rounded-start" alt="{{ cocktail.name }}">
+                        {% endif %}
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title">Коктейль "Барбарисовый spritz"</h5>
+                            <h5 class="card-title">{{ cocktail.name }}</h5>
                             <p>Ингредиенты:</p>
-                            <p class="card-text">
-                            <div>Сухое игристое вино – 60 мл</div>
-                            <div>Содовая вода – 60 мл</div>
-                            <div>Сироп Barline Барбарис – 20 мл</div>
-                            <div>Биттер COMPARI – 20 мл</div>
-                            <div>Клюква – 10 ягод (1 чайная ложка)</div>
-                            <div>Сахарная вата – 1 упаковка</div>
-                            <div>Лед</div>
-                            <p></p>
+                            <p class="card-text">{{ cocktail.description }}</p>
+                            <p class="card-text"><strong>Цена:</strong> ${{ cocktail.price }}</p>
                             <button type="button" class="btn btn-secondary">Заказать</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <div class="card text-bg-light mb-3" style="height: 100%;">
-                <div class="row g-0">
-                    <div class="col-md-3">
-                        <img src="{% static 'image/Lavender_blackberry_lemonade.png' %}"
-                             class="img-fluid rounded-start">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Лавандово-ежевичный лимонад</h5>
-                            <p>Ингредиенты:</p>
-                            <p class="card-text">
-                            <div>Содовая вода – 190 мл</div>
-                            <div>Сироп Barline Ежевика – 10 мл</div>
-                            <div>Сироп Barline Лаванда – 15 мл</div>
-                            <div>Ягоды голубики – 10 шт. (5 ягод резаных в коктейль и 5 ягод на украшение)</div>
-                            <div>Лед</div>
-                            <p></p>
-                            <p class="btn btn btn-secondary">Заказать</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
