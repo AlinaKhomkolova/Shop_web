@@ -1,16 +1,25 @@
 from django.shortcuts import render
+from catalog.models import Product, Category
 
 
 # Create your views here.
-def index(request):
-    check_info(request)
-    return render(request, 'catalog/home.html')
-
-
 def home(request):
     check_info(request)
-    return render(request, 'catalog/home.html')
 
+    # Получаем список всех категорий
+    categories = Category.objects.all()
+
+    # Фильтрация продуктов по категории, если она выбрана
+    category_id = request.GET.get('category')
+    if category_id:
+        cocktails = Product.objects.filter(category_id=category_id)
+    else:
+        cocktails = Product.objects.all()
+
+    return render(request, 'catalog/home.html', {
+        'cocktails': cocktails,
+        'categories': categories,
+    })
 
 def contacts(request):
     check_info(request)
