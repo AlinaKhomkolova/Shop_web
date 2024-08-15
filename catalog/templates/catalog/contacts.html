@@ -98,6 +98,24 @@
             опыт, наполняя каждый коктейль искусством и креативностью.
         </div>
     </div>
+
+    <h2 class="mt-5">Контактные данные пользователей</h2>
+    <div class="card">
+        <div class="card-body">
+            {% if contacts %}
+            <ul class="list-group">
+                {% for contact in contacts %}
+                <li class="list-group-item">
+                    <strong>{{ contact.name }}</strong> ({{ contact.email }}) - {{ contact.created_at|date:"d M Y" }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Нет контактов.</p>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from catalog.models import Product, Category
+from django.shortcuts import render, redirect
+
+from catalog.forms import ContactForm
+from catalog.models import Product, Category, ContactInfo
 
 
 # Create your views here.
 def home(request):
-    check_info(request)
+    contacts(request)
 
     # Получаем список всех категорий
     categories = Category.objects.all()
@@ -21,14 +23,15 @@ def home(request):
         'categories': categories,
     })
 
+
 def contacts(request):
-    check_info(request)
-    return render(request, 'catalog/contacts.html')
-
-
-def check_info(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        name = request.POST.get('name')
-        print(f'{name.title()}\n'
-              f'E-mail: {email}')
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()  # Сохраняем данные в базу данных
+            return redirect('contacts')  # Перенаправляем на ту же страницу
+    else:
+        form = ContactForm()
+
+    contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
+    return render(request, 'catalog/contacts.html', {'form': form, 'contacts': contacts_data})

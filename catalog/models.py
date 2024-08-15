@@ -32,3 +32,17 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ('name', 'category', 'price', 'created_at',)
+
+
+class ContactInfo(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    email = models.EmailField(verbose_name='E-mail')
+    created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания (записи в БД)')
+
+    class Meta:
+        verbose_name = 'Контакт'
+        verbose_name_plural = 'Контакты'
+        ordering = ('created_at',)
+
+    def __str__(self):
+        return f"Contact: {self.name}, {self.email}"
