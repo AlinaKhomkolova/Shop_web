@@ -27,3 +27,11 @@
 .footer-link {
     color: #665c49; /* Цвет текста ссылки */
 }
+
+.btn-custom.position-absolute {
+    position: absolute; /* Абсолютное позиционирование */
+    top: 0; /* Позиция от верхнего края */
+    left: 0; /* Позиция от левого края */
+    margin-top: 150px; /* Отступ сверху */
+    margin-left: 10px; /* Отступ слева */
+}
