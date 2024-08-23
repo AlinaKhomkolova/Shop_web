@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html'%}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        {% for cocktail in cocktails %}
+        <div class="col-md-6 mb-3">
+            <div class="card text-bg-light mb-3" style="height: 100%;">
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        {% if cocktail.image %}
+                        <img src="{{ cocktail.image.url }}" class="img-fluid rounded-start" alt="{{ cocktail.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cocktail.name }}</h5>
+                            <p class="card-text m-8"><strong>Цена:</strong> ${{ cocktail.price }}</p>
+                            <a class="btn btn-custom mx-2 "
+                               href="{% url 'catalog:product_description' id=cocktail.id %}">Узнать
+                                больше</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

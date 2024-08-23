@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from catalog.forms import ContactForm
 from catalog.models import Product, Category, ContactInfo
@@ -6,8 +6,6 @@ from catalog.models import Product, Category, ContactInfo
 
 # Create your views here.
 def home(request):
-    contacts(request)
-
     # Получаем список всех категорий
     categories = Category.objects.all()
 
@@ -25,12 +23,29 @@ def home(request):
     })
 
 
+def menu(request):
+    # Получаем список всех категорий
+    categories = Category.objects.all()
+
+    # Фильтрация продуктов по категории, если она выбрана
+    category_id = request.GET.get('category')
+    if category_id:
+        cocktails = Product.objects.filter(category_id=category_id)
+    else:
+        cocktails = Product.objects.all()
+
+    return render(request, 'catalog/menu.html', {
+        'cocktails': cocktails,
+        'title': 'Меню',
+    })
+
+
 def contacts(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()  # Сохраняем данные в базу данных
-            return redirect('contacts')  # Перенаправляем на ту же страницу
+            return redirect(request.path)  # Перенаправляем на ту же страницу
     else:
         form = ContactForm()
 
@@ -39,4 +54,13 @@ def contacts(request):
         'form': form,
         'contacts': contacts_data,
         'title': 'Контактная информация',
+    })
+
+
+def product_description(request, id):
+    product = get_object_or_404(Product, id=id)
+
+    return render(request, 'catalog/product_description.html', {
+        'title': 'Описание напитка',
+        'product': product
     })

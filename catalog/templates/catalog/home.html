@@ -1,29 +1,30 @@
 {% extends 'catalog/base.html'%}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        {% for cocktail in cocktails %}
-        <div class="col-md-6 mb-3">
-            <div class="card text-bg-light mb-3" style="height: 100%;">
-                <div class="row g-0">
-                    <div class="col-md-3">
-                        {% if cocktail.image %}
-                        <img src="{{ cocktail.image.url }}" class="img-fluid rounded-start" alt="{{ cocktail.name }}">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ cocktail.name }}</h5>
-                            <p>Ингредиенты:</p>
-                            <p class="card-text">{{ cocktail.description }}</p>
-                            <p class="card-text"><strong>Цена:</strong> ${{ cocktail.price }}</p>
-                            <button type="button" class="btn btn-secondary">Заказать</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="py-1 text-center container">
+    <div class="row py-lg-4">
+        <div class="mx-auto">
+            <p class="lead text-center">Добро пожаловать на сайт компании Aperol</p>
+            <p class="text-start">Aperol — вашего надежного партнера в мире изысканных коктейлей. Мы специализируемся на
+                создании
+                уникальных и незабываемых коктейльных решений для любого мероприятия. Наш ассортимент включает в себя
+                как классические, так и авторские коктейли, которые помогут добавить неповторимый вкус и атмосферу
+                вашему празднику.</p>
+            <p class="text-start">На нашем сайте вы найдете подробную информацию о нашем меню, услугах по созданию
+                коктейльных баров на
+                заказ, а также советы по подбору напитков и рецепты для самостоятельного приготовления. Мы также
+                предлагаем профессиональные барные услуги и индивидуальный подход к каждому клиенту, чтобы ваш праздник
+                стал настоящим событием.</p>
+            <p class="text-start">Погружайтесь в мир креативных напитков вместе с Aperol и сделайте ваше мероприятие
+                особенным!</p>
         </div>
-        {% endfor %}
     </div>
-</div>
+
+    <div class="row py-lg-3">
+        <div class="col-lg-6 col-md-8 mx-auto d-flex justify-content-center">
+            <a class="btn btn-custom mx-2 " href="{% url 'catalog:menu' %}">Меню</a>
+            <a class="btn btn-custom mx-2" href="{% url 'catalog:contacts' %}">Контактная информация</a>
+        </div>
+    </div>
+</section>
 {% endblock %}
