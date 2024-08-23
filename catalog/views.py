@@ -21,6 +21,7 @@ def home(request):
     return render(request, 'catalog/home.html', {
         'cocktails': cocktails,
         'categories': categories,
+        'title': 'Главная',
     })
 
 
@@ -34,4 +35,8 @@ def contacts(request):
         form = ContactForm()
 
     contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
-    return render(request, 'catalog/contacts.html', {'form': form, 'contacts': contacts_data})
+    return render(request, 'catalog/contacts.html', {
+        'form': form,
+        'contacts': contacts_data,
+        'title': 'Контактная информация',
+    })
