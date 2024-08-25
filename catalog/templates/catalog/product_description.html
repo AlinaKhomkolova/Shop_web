@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<!-- Кнопка "Назад к списку товаров" с абсолютным позиционированием, вне контейнера -->
+<a href="{% url 'catalog:menu' %}" class="btn btn-custom position-absolute">Назад к списку товаров</a>
+
+<div class="container mt-5">
+    <div class="row mt-5"> <!-- Добавляем отступы сверху -->
+        <!-- Изображение товара -->
+        <div class="col-md-6">
+            <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
+        </div>
+
+        <!-- Описание и цена товара -->
+        <div class="col-md-6">
+            <h1>{{ product.name }}</h1>
+            <div class="mb-3">
+                <p>{{ product.description|safe }}</p>
+            </div>
+            <p class="text-muted"><strong>Цена:</strong> ${{ product.price }}</p>
+
+            <!-- Кнопка с корзинкой -->
+            <a href="#" class="btn btn-custom">
+                <i class="bi bi-cart"></i> Добавить в корзину
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
