@@ -1,8 +1,21 @@
-{% extends 'catalog/base.html'%}
+{% extends 'catalog/base.html' %}
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        {% for cocktail in cocktails %}
+        <div class="col-md-12">
+            <div class="d-flex justify-content-start mb-4">
+                <a href="?" class="btn btn-custom me-2">Все категории</a>
+                {% for category in categories %}
+                <a href="?category={{ category.id }}{% if page_obj.has_other_pages %}&page={{ page_obj.number }}{% endif %}"
+                   class="btn btn-custom me-2">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% for cocktail in page_obj %}
         <div class="col-md-6 mb-3">
             <div class="card text-bg-light mb-3" style="height: 100%;">
                 <div class="row g-0">
@@ -14,10 +27,13 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">{{ cocktail.name }}</h5>
-                            <p class="card-text m-8"><strong>Цена:</strong> ${{ cocktail.price }}</p>
-                            <a class="btn btn-custom mx-2 "
-                               href="{% url 'catalog:product_description' id=cocktail.id %}">Узнать
-                                больше</a>
+                            <p class="card-text">
+                                {{ cocktail.description|safe|slice:':100' }}
+                                {% if cocktail.description|length > 100 %}...{% endif %}
+                            </p>
+                            <p class="card-text"><strong>Цена:</strong> {{ cocktail.price }} ₽</p>
+                            <a class="btn btn-custom mx-2"
+                               href="{% url 'catalog:product_description' id=cocktail.id %}">Узнать больше</a>
                         </div>
                     </div>
                 </div>
@@ -25,5 +41,52 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Пагинация -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.category %}category={{ request.GET.category }}{% endif %}&page=1"
+                   aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.category %}category={{ request.GET.category }}{% endif %}&page={{ page_obj.previous_page_number }}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                <a class="page-link"
+                   href="?{% if request.GET.category %}category={{ request.GET.category }}{% endif %}&page={{ i }}">{{ i
+                    }}</a>
+            </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.category %}category={{ request.GET.category }}{% endif %}&page={{ page_obj.next_page_number }}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.category %}category={{ request.GET.category }}{% endif %}&page={{ page_obj.paginator.num_pages }}"
+                   aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock %}
