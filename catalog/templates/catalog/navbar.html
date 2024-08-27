@@ -1,0 +1,61 @@
+{% load static %}
+<nav class="navbar bg-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light d-flex align-items-center" href="{% url 'catalog:home' %}">
+            <img src="{% static 'image/icon.png' %}" alt="Logo" width="80" height="80"
+                 class="d-inline-block align-text-top">
+            <div class="ms-3">
+                <h1 class="mb-0">Aperol</h1>
+                <div class="text-muted">
+                    <h6 class="mb-0">Выездной бар</h6>
+                </div>
+            </div>
+        </a>
+
+        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header bg-custom">
+                <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'catalog:home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'catalog:menu' %}">Меню</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'catalog:contacts' %}">☎️Контактная информация</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'catalog:create_product' %}">Добавить продукт</a>
+                    </li>
+                </ul>
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput" class="form-label">E-mail</label>
+                                <input type="email" name="email" class="form-control" id="formGroupExampleInput"
+                                       placeholder="ivan.ivanov@gmail.com"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="formGroupExampleInput2" class="form-label">Имя</label>
+                                <input type="text" name="name" class="form-control" id="formGroupExampleInput2"
+                                       placeholder="Иван Иванов"/>
+                            </div>
+                            <input type="submit" class="btn btn-custom" value="Отправить"/>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

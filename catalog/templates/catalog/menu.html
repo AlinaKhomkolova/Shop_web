@@ -1,4 +1,5 @@
 {% extends 'catalog/base.html' %}
+{% load image_tags %}
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -21,7 +22,7 @@
                 <div class="row g-0">
                     <div class="col-md-3">
                         {% if cocktail.image %}
-                        <img src="{{ cocktail.image.url }}" class="img-fluid rounded-start" alt="{{ cocktail.name }}">
+                        {% render_image cocktail.image.url cocktail.name 'img-fluid rounded-start' %}
                         {% endif %}
                     </div>
                     <div class="col-md-8">
