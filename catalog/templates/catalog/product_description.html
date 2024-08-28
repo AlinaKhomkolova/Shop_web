@@ -1,4 +1,5 @@
 {% extends 'catalog/base.html' %}
+{% load image_tags %}
 {% block content %}
 <!-- Кнопка "Назад к списку товаров" с абсолютным позиционированием, вне контейнера -->
 <a href="{% url 'catalog:menu' %}" class="btn btn-custom position-absolute">Назад к списку товаров</a>
@@ -7,7 +8,7 @@
     <div class="row mt-5"> <!-- Добавляем отступы сверху -->
         <!-- Изображение товара -->
         <div class="col-md-6">
-            <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
+            {% render_image product.image.url product.name 'img-fluid rounded-start' %}
         </div>
 
         <!-- Описание и цена товара -->
