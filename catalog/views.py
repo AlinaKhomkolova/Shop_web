@@ -1,27 +1,19 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView
 
 from catalog.forms import ContactForm, CreateProductForm
 from catalog.models import Product, Category, ContactInfo
 
 
-# Create your views here.
-def home(request):
-    # Получаем список всех категорий
-    categories = Category.objects.all()
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
 
-    # Фильтрация продуктов по категории, если она выбрана
-    category_id = request.GET.get('category')
-    if category_id:
-        cocktails = Product.objects.filter(category_id=category_id)
-    else:
-        cocktails = Product.objects.all()
 
-    return render(request, 'catalog/home.html', {
-        'cocktails': cocktails,
-        'categories': categories,
-        'title': 'Главная',
-    })
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_description.html'
 
 
 def menu(request):
@@ -64,8 +56,8 @@ def contacts(request):
     })
 
 
-def product_description(request, id):
-    product = get_object_or_404(Product, id=id)
+def product_description(request, pk):
+    product = get_object_or_404(Product, id=pk)
 
     return render(request, 'catalog/product_description.html', {
         'title': 'Описание',
