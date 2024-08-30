@@ -1,92 +1,86 @@
-from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView
 
 from catalog.forms import ContactForm, CreateProductForm
 from catalog.models import Product, Category, ContactInfo
 
 
-# Create your views here.
-def home(request):
-    # Получаем список всех категорий
-    categories = Category.objects.all()
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
 
-    # Фильтрация продуктов по категории, если она выбрана
-    category_id = request.GET.get('category')
-    if category_id:
-        cocktails = Product.objects.filter(category_id=category_id)
-    else:
-        cocktails = Product.objects.all()
-
-    return render(request, 'catalog/home.html', {
-        'cocktails': cocktails,
-        'categories': categories,
-        'title': 'Главная',
-    })
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['title'] = 'Главная'
+        return data
 
 
-def menu(request):
-    # Получаем список всех категорий
-    categories = Category.objects.all()
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_description.html'
 
-    # Фильтрация продуктов по категории, если она выбрана
-    category_id = request.GET.get('category')
-    if category_id:
-        cocktails = Product.objects.filter(category_id=category_id)
-    else:
-        cocktails = Product.objects.all()
-
-    # Пагинация
-    paginator = Paginator(cocktails, 10)  # 10 продуктов на странице
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'catalog/menu.html', {
-        'categories': categories,
-        'page_obj': page_obj,
-        'title': 'Меню',
-    })
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['title'] = 'Описание'
+        return data
 
 
-def contacts(request):
-    if request.method == 'POST':
+class MenuListView(ListView):
+    model = Product
+    template_name = 'catalog/menu.html'
+    context_object_name = 'page_obj'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_id = self.request.GET.get('category')
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['categories'] = Category.objects.all()
+        data['title'] = 'Меню'
+        return data
+
+
+class ContactsView(View):
+    template_name = 'catalog/contacts.html'
+
+    def get(self, request, *args, **kwargs):
+        form = ContactForm()
+        contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
+        return render(request, self.template_name, {
+            'form': form,
+            'contacts': contacts_data,
+            'title': 'Контактная информация',
+        })
+
+    def post(self, request, *args, **kwargs):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()  # Сохраняем данные в базу данных
             return redirect(request.path)  # Перенаправляем на ту же страницу
-    else:
-        form = ContactForm()
 
-    contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
-    return render(request, 'catalog/contacts.html', {
-        'form': form,
-        'contacts': contacts_data,
-        'title': 'Контактная информация',
-    })
+        contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
+        return render(request, self.template_name, {
+            'form': form,
+            'contacts': contacts_data,
+            'title': 'Контактная информация',
+        })
 
 
-def product_description(request, id):
-    product = get_object_or_404(Product, id=id)
+class CreateProduct(CreateView):
+    model = Product
+    form_class = CreateProductForm
+    template_name = 'catalog/create_product.html'
+    success_url = reverse_lazy('create_product')  # Перенаправляем на ту же страницу
 
-    return render(request, 'catalog/product_description.html', {
-        'title': 'Описание',
-        'product': product,
-    })
-
-
-def create_product(request):
-    if request.method == 'POST':
-        form = CreateProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()  # Сохранение нового продукта
-            return redirect(request.path)  # Перенаправляем на ту же страницу
-    else:
-        form = CreateProductForm()
-
-    categories = Category.objects.all()  # Получаем все категории из базы данных
-    product_data = CreateProductForm()
-    return render(request, 'catalog/create_product.html', {
-        'form': form,
-        'product': product_data,
-        'categories': categories,
-        'title': 'Создание карточки продукта',
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()  # Добавляем категории в контекст
+        context['title'] = 'Создание карточки продукта'
+        return context
