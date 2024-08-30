@@ -1,0 +1,41 @@
+{% extends 'catalog/base.html' %}
+{% load image_tags %}
+{% block content %}
+<div class="container mt-5">
+    <a class="btn btn-custom" href="{% url 'blog:create' %}">Добавить пост</a>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        {% for object in object_list %}
+        <div class="col-md-6 mb-3">
+            <div class="card text-bg-light mb-3" style="height: 100%;">
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        {% if object.image %}
+                        {% render_image object.image.url object.title 'img-fluid rounded-start' %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ object.title }}</h5>
+                            <p class="card-text">
+                                {{ object.body|safe|slice:':100' }}
+                                {% if object.body|length > 100 %}...{% endif %}
+                            </p>
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-custom"
+                                   href="{% url 'blog:view' object.pk %}">Посмотреть</a>
+                                <a class="btn btn-sm btn-custom"
+                                   href="{% url 'blog:edit' object.pk %}">Изменить</a>
+                                <a class="btn btn-sm btn-custom"
+                                   href="{% url 'blog:delete' object.pk %}">Удалить</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
