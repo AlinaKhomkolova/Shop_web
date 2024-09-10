@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
-from catalog.forms import ContactForm, CreateProductForm
+from catalog.forms import ContactForm, ProductForm
 from catalog.models import Product, Category, ContactInfo
 
 
@@ -73,14 +73,18 @@ class ContactsView(View):
         })
 
 
-class CreateProduct(CreateView):
+class ProductCreateView(CreateView):
     model = Product
-    form_class = CreateProductForm
-    template_name = 'catalog/create_product.html'
-    success_url = reverse_lazy('create_product')  # Перенаправляем на ту же страницу
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:menu')  # Перенаправляем на ту же страницу
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()  # Добавляем категории в контекст
         context['title'] = 'Создание карточки продукта'
         return context
+
+
+class ProductUpdateView(UpdateView):
+    pass

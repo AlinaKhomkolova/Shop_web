@@ -6,12 +6,11 @@ from .models import ContactInfo, Product
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactInfo
-        fields = ['email', 'name']
+        fields = ('email', 'name')
 
 
-class CreateProductForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'image',
-                  'category', 'price',
-                  ]
+        fields = ('name', 'description', 'image',
+                  'category', 'price',)
