@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ContactForm, ProductForm
 from catalog.models import Product, Category, ContactInfo
@@ -19,7 +19,7 @@ class ProductListView(ListView):
 
 class ProductDetailView(DetailView):
     model = Product
-    template_name = 'catalog/product_description.html'
+    template_name = 'catalog/product_detail.html'
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -47,37 +47,24 @@ class MenuListView(ListView):
         return data
 
 
-class ContactsView(View):
+class ContactsCreateView(CreateView):
+    model = ContactInfo
     template_name = 'catalog/contacts.html'
-
-    def get(self, request, *args, **kwargs):
-        form = ContactForm()
-        contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
-        return render(request, self.template_name, {
-            'form': form,
-            'contacts': contacts_data,
-            'title': 'Контактная информация',
-        })
-
-    def post(self, request, *args, **kwargs):
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()  # Сохраняем данные в базу данных
-            return redirect(request.path)  # Перенаправляем на ту же страницу
-
-        contacts_data = ContactInfo.objects.all()  # Получаем все контакты из базы данных
-        return render(request, self.template_name, {
-            'form': form,
-            'contacts': contacts_data,
-            'title': 'Контактная информация',
-        })
+    success_url = reverse_lazy('catalog:contacts')
+    form_class = ContactForm
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = ContactInfo.objects.all()  # Добавляем категории в контекст
+        context['title'] = 'Контактная информация'
+        return context
 
 
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
-    success_url = reverse_lazy('catalog:menu')  # Перенаправляем на ту же страницу
+    success_url = reverse_lazy('catalog:menu')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -87,4 +74,23 @@ class ProductCreateView(CreateView):
 
 
 class ProductUpdateView(UpdateView):
-    pass
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:menu')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()  # Добавляем категории в контекст
+        context['title'] = 'Изменение карточки продукта'
+        return context
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:menu')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удаление продукта'
+        return context

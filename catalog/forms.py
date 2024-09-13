@@ -14,3 +14,13 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ('name', 'description', 'image',
                   'category', 'price',)
+
+    def clean_name(self):
+        cleaned_data = self.cleaned_data['name']
+        censorship = ['казино', 'криптовалюта', 'крипта', 'биржа',
+                      'дешево', 'бесплатно', 'обман', 'полиция',
+                      'радар', ]
+        for word in censorship:
+            if word in cleaned_data.lower():
+                raise forms.ValidationError(f'Ошибка: Нельзя использовать слово "{word}"')
+        return cleaned_data

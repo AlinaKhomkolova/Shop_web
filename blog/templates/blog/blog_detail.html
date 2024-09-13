@@ -1,11 +1,9 @@
 {% extends 'catalog/base.html' %}
 {% load image_tags %}
 {% block content %}
-<!-- Кнопка "Назад к списку постов" с абсолютным позиционированием, вне контейнера -->
-<a href="{% url 'blog:list' %}" class="btn btn-custom position-absolute">Назад к списку постов</a>
 
 <div class="container mt-5">
-    <div class="row mt-5"> <!-- Добавляем отступы сверху -->
+    <div class="row mt-5">
         <!-- Изображение поста -->
         <div class="col-md-6">
             {% if object.image %}

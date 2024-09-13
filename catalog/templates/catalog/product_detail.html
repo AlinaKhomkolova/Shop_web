@@ -1,14 +1,18 @@
 {% extends 'catalog/base.html' %}
 {% load image_tags %}
 {% block content %}
-<!-- Кнопка "Назад к списку товаров" с абсолютным позиционированием, вне контейнера -->
+
 <a href="{% url 'catalog:menu' %}" class="btn btn-custom position-absolute">Назад к списку товаров</a>
 
 <div class="container mt-5">
-    <div class="row mt-5"> <!-- Добавляем отступы сверху -->
+    <div class="row mt-5">
         <!-- Изображение товара -->
         <div class="col-md-6">
+            {% if product.image %}
             {% render_image product.image.url product.name 'img-fluid rounded-start' %}
+            {% else %}
+            <p>Изображение отсутствует</p>
+            {% endif %}
         </div>
 
         <!-- Описание и цена товара -->
@@ -19,7 +23,7 @@
             </div>
             <p class="text-muted"><strong>Цена:</strong> {{ product.price }} ₽</p>
 
-            <!-- Кнопка с корзинкой -->
+
             <a href="#" class="btn btn-custom">
                 <i class="bi bi-cart"></i> Добавить в корзину
             </a>

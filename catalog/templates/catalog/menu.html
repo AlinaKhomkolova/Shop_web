@@ -36,9 +36,11 @@
                             <div class="col-12">
                                 <div class="card-body">
                                     <a class="btn btn-custom m-2"
-                                       href="{% url 'catalog:product_description' pk=cocktail.id %}">Узнать больше</a>
+                                       href="{% url 'catalog:product_detail' pk=cocktail.id %}">Узнать больше</a>
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:update_product' pk=cocktail.id %}">Изменить</a>
+                                    <a class="btn btn-custom m-2"
+                                       href="{% url 'catalog:delete_product' pk=cocktail.id %}">Удалить</a>
                                 </div>
                             </div>
                         </div>

@@ -6,7 +6,13 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-custom">Создать продукт</button>
+            <button type="submit" class="btn btn-custom">
+                {% if object %}
+                Сохранить
+                {% else %}
+                Создать продукт
+                {% endif %}
+            </button>
         </form>
     </div>
 </div>
