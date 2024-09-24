@@ -1,19 +1,41 @@
 {% extends 'catalog/base.html' %}
 
 {% block content %}
-<div class="card mt-4">
-    <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-custom">
-                {% if object %}
-                Сохранить
-                {% else %}
-                Создать продукт
-                {% endif %}
-            </button>
-        </form>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <h4>{{ title }}</h4>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-custom">
+                            {% if object %}
+                            Сохранить
+                            {% else %}
+                            Создать продукт
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <h4>Форма версии</h4>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ version_formset.management_form }}
+                        {% for form in version_formset %}
+                        {{ form.as_p }}
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

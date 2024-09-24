@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ContactInfo, Product
+from .models import ContactInfo, Product, Version
 
 
 class ContactForm(forms.ModelForm):
@@ -24,3 +24,9 @@ class ProductForm(forms.ModelForm):
             if word in cleaned_data.lower():
                 raise forms.ValidationError(f'Ошибка: Нельзя использовать слово "{word}"')
         return cleaned_data
+
+
+class VersionForm(forms.ModelForm):
+    class Meta:
+        model = Version
+        fields = ("version_number", "version_name", "is_active",)

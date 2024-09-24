@@ -6,6 +6,7 @@ from catalog.views import ProductListView, ProductDetailView, MenuListView, Prod
     ProductUpdateView, ProductDeleteView, ContactsCreateView
 
 app_name = CatalogConfig.name
+
 urlpatterns = [
     path('', ProductListView.as_view(), name='home'),
     path('blog_form.html', BlogCreateView.as_view(), name='blog_form'),

@@ -46,3 +46,18 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return f"Contact: {self.name}, {self.email}"
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='versions')
+    version_number = models.CharField(max_length=20, verbose_name='Номер версии')
+    version_name = models.CharField(max_length=150, verbose_name='Название версии')
+    is_active = models.BooleanField(default=False, verbose_name='Признак текущей версии')
+
+    def __str__(self):
+        return f'{self.version_name}\n'
+
+    class Meta:
+        verbose_name = 'Версия'
+        verbose_name_plural = 'Версии'
+        ordering = ('product', 'version_number', 'version_name', 'is_active',)

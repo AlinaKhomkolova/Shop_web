@@ -18,6 +18,11 @@ class BlogCreateView(CreateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Создание поста'
+        return context
+
 
 class BlogUpdateView(UpdateView):
     model = Blog
@@ -25,6 +30,11 @@ class BlogUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('blog:view', args=[self.kwargs.get('pk')])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Изменение поста'
+        return context
 
     def form_valid(self, form):
         if form.is_valid():
@@ -42,6 +52,11 @@ class BlogListView(ListView):
         # Фильтруем статьи, которые опубликованы
         return Blog.objects.filter(is_published=True)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Список постов'
+        return context
+
 
 class BlogDetailView(DetailView):
     model = Blog
@@ -53,7 +68,17 @@ class BlogDetailView(DetailView):
 
         return self.objects
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Подробности поста'
+        return context
+
 
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('blog:list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Удаление поста'
+        return context
