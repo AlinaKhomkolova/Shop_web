@@ -49,10 +49,14 @@ class ContactInfo(models.Model):
 
 
 class Version(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='versions')
-    version_number = models.CharField(max_length=20, verbose_name='Номер версии')
-    version_name = models.CharField(max_length=150, verbose_name='Название версии')
-    is_active = models.BooleanField(default=False, verbose_name='Признак текущей версии')
+    product = models.ForeignKey(Product, verbose_name='Наименование продукта', on_delete=models.CASCADE,
+                                related_name='versions', **NULLABLE)
+    version_number = models.PositiveIntegerField(default='0', verbose_name='Номер версии',
+                                                 help_text='Введите номер версии продукта', **NULLABLE)
+    version_name = models.CharField(max_length=150, verbose_name='Название версии',
+                                    help_text="Введите наименование версии продукта", **NULLABLE)
+    is_active = models.BooleanField(default=True, verbose_name='Признак текущей версии', help_text="Версия активна?",
+                                    **NULLABLE)
 
     def __str__(self):
         return f'{self.version_name}\n'
@@ -60,4 +64,4 @@ class Version(models.Model):
     class Meta:
         verbose_name = 'Версия'
         verbose_name_plural = 'Версии'
-        ordering = ('product', 'version_number', 'version_name', 'is_active',)
+        ordering = ('product', 'version_number', 'version_name',)

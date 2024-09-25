@@ -49,7 +49,7 @@ class MenuListView(ListView):
                 product_id=product.pk, is_active=True
             )
             if active_version:
-                product.is_active = active_version.last().name
+                product.is_active = active_version.last().version_name
             else:
                 product.is_active = "Активная версия отсутствует"
         context["object_list"] = products
@@ -89,19 +89,26 @@ class ProductCreateView(CreateView):
         VersionFormset = inlineformset_factory(
             Product, Version, form=VersionForm, extra=1
         )
-        context['title'] = 'Создание карточки продукта'
-        context['version_formset'] = VersionFormset(instance=self.object)
+
         if self.request.method == "POST":
-            context["formset"] = VersionFormset(self.request.POST)
+            context["formset"] = VersionFormset(self.request.POST, instance=self.object)
         else:
-            context["formset"] = VersionFormset()
+            context["formset"] = VersionFormset(instance=self.object)
+
+        context['title'] = 'Создание карточки продукта'
+
         return context
 
     def form_valid(self, form):
-        formset = self.get_context_data()["formset"]
+        context = self.get_context_data()
+        formset = context["formset"]
+        # Сохранение объекта
+        self.object = form.save()
+        # проверка валидности formset и сохраняем его
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
+
         return super().form_valid(form)
 
 
@@ -113,26 +120,33 @@ class ProductUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        VersionFormset = inlineformset_factory(
+        ProductForm = inlineformset_factory(
             Product, Version, form=VersionForm, extra=1
         )
-        context['categories'] = Category.objects.all()  # Добавляем категории в контекст
-        context['title'] = 'Изменение карточки продукта'
 
         if self.request.method == "POST":
-            context["formset"] = VersionFormset(
+            context["formset"] = ProductForm(
                 self.request.POST, instance=self.object
             )
         else:
-            context["formset"] = VersionFormset(instance=self.object)
+            context["formset"] = ProductForm(instance=self.object)
+
+        context['categories'] = Category.objects.all()
+        context['title'] = 'Изменение карточки продукта'
+
         return context
 
     def form_valid(self, form):
-        formset = self.get_context_data()["formset"]
+        context = self.get_context_data()
+        formset = context["formset"]
+        # Сохранение объекта
         self.object = form.save()
+        # проверка валидности formset и сохраняем его
         if formset.is_valid():
+            self.object = form.save()
             formset.instance = self.object
             formset.save()
+
         return super().form_valid(form)
 
 

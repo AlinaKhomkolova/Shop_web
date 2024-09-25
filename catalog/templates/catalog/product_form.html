@@ -2,39 +2,41 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mt-4">
-                <h4>{{ title }}</h4>
-                <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-custom">
-                            {% if object %}
-                            Сохранить
-                            {% else %}
-                            Создать продукт
+    <div class="row text">
+        <div class="col-12">
+            <form class='row' method="POST" enctype="multipart/form-data">
+                <div class="col-6">
+                    <div class="card">
+                        <h4>{{ title }}</h4>
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-custom">
+                                {% if object %}
+                                Сохранить
+                                {% else %}
+                                Создать продукт
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <h4>Создание версии</h4>
+                        <div class="card-body">
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                            {{ form.as_p }}
+                            {% if not forloop.last %}
+                            <hr>
                             {% endif %}
-                        </button>
-                    </form>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="card mt-4">
-                <h4>Форма версии</h4>
-                <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ version_formset.management_form }}
-                        {% for form in version_formset %}
-                        {{ form.as_p }}
-                        {% endfor %}
-                    </form>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
