@@ -42,23 +42,16 @@ class MenuListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         products = context['page_obj']
-        active_versions = {}
-        products = self.get_queryset()
+
+        active_versions = Version.objects.filter(is_active=True, product__in=products)
+
+        version_dict = {version.product_id: version.version_name for version in active_versions}
+
         for product in products:
-            active_version = Version.objects.filter(
-                product_id=product.pk, is_active=True
-            )
-            if active_version:
-                product.is_active = active_version.last().version_name
-            else:
-                product.is_active = "Активная версия отсутствует"
+            product.active_version = version_dict.get(product.pk, "Активная версия отсутствует")
+
         context["object_list"] = products
-
-        for product in products:
-            active_version = product.versions.filter(is_active=True).first()
-            active_versions[product.id] = active_version
-
-        context['active_versions'] = active_versions
+        context['active_versions'] = version_dict
         context['categories'] = Category.objects.all()
         context['title'] = 'Меню'
 
