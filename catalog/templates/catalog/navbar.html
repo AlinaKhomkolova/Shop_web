@@ -26,17 +26,35 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'catalog:home' %}">Главная</a>
                     </li>
+                    <hr>
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'catalog:menu' %}">Меню</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'catalog:contacts' %}">☎️Контактная информация</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link active" href="{% url 'catalog:create_product' %}">Добавить продукт</a>
                     </li>
+                    <hr>
+
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'blog:list' %}">Посты</a>
+                    </li>
+                    <hr>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'users:logout' %}">Выйти</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'users:login' %}">Войти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'users:register' %}">Регистрация</a>
+                    </li>
+                    {% endif %}
+
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'catalog:contacts' %}">☎️Контактная информация</a>
                     </li>
                 </ul>
                 <div class="card mt-4">

@@ -17,4 +17,5 @@ urlpatterns = [
     path('update/<int:pk>/', ProductUpdateView.as_view(), name='update_product'),  # Изменение продукта
     path('delete_product/<int:pk>/', ProductDeleteView.as_view(), name='delete_product'),  # Удаление продукта
 
+
 ]
