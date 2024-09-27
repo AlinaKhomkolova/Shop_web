@@ -20,9 +20,10 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_active = False
-        token_user = secrets.token_hex(16)
+        token = secrets.token_hex(16)
+        user_token = token
         host = self.request.get_host()
-        url = f'http://{host}/users/email-confirm/{token_user}/'
+        url = f'http://{host}/users/email-confirm/{user_token}/'
         user.save()
 
         send_mail(
@@ -39,4 +40,5 @@ class RegisterView(CreateView):
 def email_verification(request, token):
     user = get_object_or_404(User, token=token)
     user.is_active = True
+    user.save()
     return redirect(reverse('users:login'))
