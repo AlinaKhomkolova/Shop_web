@@ -1,5 +1,5 @@
 import secrets
-from audioop import reverse
+from django.urls import reverse
 
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
@@ -22,17 +22,20 @@ class RegisterView(CreateView):
         user.is_active = False
         token = secrets.token_hex(16)
         user_token = token
+        user.token = user_token
         host = self.request.get_host()
         url = f'http://{host}/users/email-confirm/{user_token}/'
         user.save()
 
-        send_mail(
-            subject='Подтверждение',
-            message=f'Привет, я рад что ты стал нашим пользователем.\n'
-                    f'Чтобы подтвердить свою почту перейди по ссылке {url}\n',
-            from_email=DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-        )
+        try:
+            send_mail(
+                subject='Подтверждение',
+                message=f'Привет, чтобы подтвердить свою почту перейди по ссылке {url}\n',
+                from_email=DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+            )
+        except Exception as e:
+            print(f"Ошибка при отправке письма: {e}")
 
         return super().form_valid(form)
 
