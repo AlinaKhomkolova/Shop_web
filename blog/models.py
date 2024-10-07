@@ -1,6 +1,6 @@
 from django.db import models
 
-from catalog.models import NULLABLE
+from catalog.common import NULLABLE
 
 
 class Blog(models.Model):

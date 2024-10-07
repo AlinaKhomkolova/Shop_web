@@ -1,6 +1,7 @@
 from django.db import models
 
-NULLABLE = {'blank': True, 'null': True}
+from catalog.common import NULLABLE
+from users.models import User
 
 
 class Category(models.Model):
@@ -24,7 +25,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена за покупку')
     created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания (записи в БД)')
     updated_at = models.DateField(auto_now=True, verbose_name='Дата последнего изменения (записи в БД)')
-
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, **NULLABLE)
+    status = models.BooleanField(verbose_name='Статус продукта', default=False)
     def __str__(self):
         return f'{self.name}\n'
 
@@ -32,6 +34,11 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ('name', 'category', 'price', 'created_at',)
+        permissions = [
+            ('can_change_product_description', 'Может изменять описание продукта'),
+            ('can_change_product_category', 'Может изменять категорию продукта'),
+            ('can_publish_product', 'Может изменять статус публикации продукта'),
+        ]
 
 
 class ContactInfo(models.Model):

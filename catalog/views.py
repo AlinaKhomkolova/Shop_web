@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -105,7 +105,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         formset = context["formset"]
         # Привязка текущего пользователя к создаваемому продукту
-        form.instance.owner = self.request.user
+        form.instance.user = self.request.user
         # Сохранение объекта
         self.object = form.save()
         # проверка валидности formset и сохраняем его
@@ -116,11 +116,19 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:menu')
+    permission_required = (
+        'catalog.change_product_status',
+        'catalog.change_product_description',
+        'catalog.change_product_category',
+    )
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

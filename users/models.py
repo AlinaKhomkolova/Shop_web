@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from catalog.models import NULLABLE
+from catalog.common import NULLABLE
 
 
 class User(AbstractUser):
