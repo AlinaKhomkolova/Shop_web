@@ -13,8 +13,9 @@ class Command(BaseCommand):
         group, created = Group.objects.get_or_create(name=group_name)
 
         content_type = ContentType.objects.get_for_model(Product)
+
         permissions = [
-            "can_publish_product",
+            "can_change_product_status",
             "can_change_product_description",
             "can_change_product_category",
         ]

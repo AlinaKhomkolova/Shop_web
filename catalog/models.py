@@ -37,7 +37,7 @@ class Product(models.Model):
         permissions = [
             ('can_change_product_description', 'Может изменять описание продукта'),
             ('can_change_product_category', 'Может изменять категорию продукта'),
-            ('can_publish_product', 'Может изменять статус публикации продукта'),
+            ('can_change_product_status', 'Может изменять статус публикации продукта'),
         ]
 
 

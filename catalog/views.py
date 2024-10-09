@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -122,10 +123,29 @@ class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:menu')
     permission_required = (
-        'catalog.change_product_status',
-        'catalog.change_product_description',
-        'catalog.change_product_category',
-    )
+        'catalog.can_change_product_status',
+        'catalog.can_change_product_description',
+        'catalog.can_change_product_category',)
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if self.request.user != obj.user:
+            print(f'User: {self.request.user}, Permissions: {self.request.user.get_all_permissions()}')
+
+            if not self.request.user.has_perms(self.permission_required):
+                print('Permission denied: У пользователя нет необходимых разрешений')
+                raise PermissionDenied
+
+        return obj
+
+    def has_permission(self):
+        # Проверка прав для текущего пользователя
+        return (
+                self.request.user.has_perm('catalog.can_change_product_status') or
+                self.request.user.has_perm('catalog.can_change_product_description') or
+                self.request.user.has_perm('catalog.can_change_product_category') or
+                self.request.user == self.get_object().user  # Позволить владельцу редактировать
+        )
 
     def get_permission_object(self):
         return self.get_object()
@@ -134,6 +154,11 @@ class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
         if not request.user.is_authenticated:
             messages.error(request, 'Пожалуйста, войдите в систему или зарегистрируйтесь, чтобы изменить продукт.')
             return redirect('users:login')
+
+        if not self.has_permission():
+            messages.error(request, 'У вас нет доступа к этой странице.')
+            return redirect('catalog:menu')
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -155,7 +180,29 @@ class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
         return context
 
     def form_valid(self, form):
-        context = self.get_context_data()
+
+        original_obj = self.get_object()
+
+        # Проверяем и обновляем описание, если у пользователя есть разрешение
+        if self.request.user.has_perm('catalog.can_change_product_description'):
+            original_obj.description = form.cleaned_data.get('description', original_obj.description)
+
+        # Проверяем и обновляем категорию, если у пользователя есть разрешение
+        if self.request.user.has_perm('catalog.can_change_product_category'):
+            original_obj.category = form.cleaned_data.get('category', original_obj.category)
+
+        # Проверяем и обновляем статус, если у пользователя есть разрешение
+        if self.request.user.has_perm('catalog.can_change_product_status'):
+            original_obj.status = form.cleaned_data.get('status', original_obj.status)
+        # Оставляем другие поля неизменными, если нет разрешений
+        original_obj.name = original_obj.name
+        original_obj.price = original_obj.price
+        original_obj.image = original_obj.image
+
+        # Сохраняем объект
+        original_obj.save()
+
+        context = self.get_context_data(form=form)
         formset = context["formset"]
         # Сохранение объекта
         self.object = form.save()

@@ -37,10 +37,14 @@
                                 <div class="card-body">
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:product_detail' pk=cocktail.id %}">Узнать больше</a>
+                                    {% if user == cocktail.user or perms.catalog.can_change_product %}
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:update_product' pk=cocktail.id %}">Изменить</a>
+                                    {% endif %}
+                                    {% if user == cocktail.user or perms.catalog.can_delete_product %}
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:delete_product' pk=cocktail.id %}">Удалить</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
