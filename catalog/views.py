@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
@@ -8,6 +10,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from catalog.forms import ContactForm, ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, Category, ContactInfo, Version
+from catalog.services import get_cached_categories
 
 
 class ProductListView(ListView):
@@ -27,7 +30,21 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['title'] = 'Описание'
+
         return data
+
+    def get_object(self, queryset=None):
+        if settings.CACHE_ENABLED:
+            cache_key = f'product_detail_{self.kwargs["pk"]}'
+            product = cache.get(cache_key)
+
+            if product is None:  # Если продукта нет в кэше
+                product = super().get_object(queryset)
+                cache.set(cache_key, product)  # Сохраняем продукт в кэш
+
+            return product
+
+        return super().get_object(queryset)  # Если кэш не включен, возвращаем объект без кэширования
 
 
 class MenuListView(ListView):
@@ -56,22 +73,9 @@ class MenuListView(ListView):
 
         context["object_list"] = products
         context['active_versions'] = version_dict
-        context['categories'] = Category.objects.all()
+        context['categories'] = get_cached_categories()
         context['title'] = 'Меню'
 
-        return context
-
-
-class ContactsCreateView(CreateView):
-    model = ContactInfo
-    template_name = 'catalog/contacts.html'
-    success_url = reverse_lazy('catalog:contacts')
-    form_class = ContactForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['contacts'] = ContactInfo.objects.all()  # Добавляем категории в контекст
-        context['title'] = 'Контактная информация'
         return context
 
 
@@ -232,4 +236,17 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Удаление продукта'
+        return context
+
+
+class ContactsCreateView(CreateView):
+    model = ContactInfo
+    template_name = 'catalog/contacts.html'
+    success_url = reverse_lazy('catalog:contacts')
+    form_class = ContactForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = ContactInfo.objects.all()  # Добавляем категории в контекст
+        context['title'] = 'Контактная информация'
         return context

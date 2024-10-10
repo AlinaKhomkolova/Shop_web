@@ -40,9 +40,7 @@
                                     {% if user == cocktail.user or perms.catalog.can_delete_product%}
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:update_product' pk=cocktail.id %}">Изменить</a>
-                                    {% elif perms.catalog.can_change_product_description and
-                                    perms.catalog.can_change_product_status and
-                                    perms.catalog.can_change_product_category %}
+                                    {% elif perms.catalog.can_change_product_description and perms.catalog.can_change_product_status and perms.catalog.can_change_product_category %}
                                     <a class="btn btn-custom m-2"
                                        href="{% url 'catalog:moderator_update_product' pk=cocktail.id %}">Изменить</a>
                                     {% endif %}
