@@ -27,6 +27,7 @@ class Product(models.Model):
     updated_at = models.DateField(auto_now=True, verbose_name='Дата последнего изменения (записи в БД)')
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, **NULLABLE)
     status = models.BooleanField(verbose_name='Статус продукта', default=False)
+
     def __str__(self):
         return f'{self.name}\n'
 

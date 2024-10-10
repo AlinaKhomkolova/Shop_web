@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ContactForm, ProductForm, VersionForm
+from catalog.forms import ContactForm, ProductForm, VersionForm, ModeratorProductForm
 from catalog.models import Product, Category, ContactInfo, Version
 
 
@@ -179,30 +179,18 @@ class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
 
         return context
 
+    def get_form_class(self):
+        user = self.request.user
+        if self.object.user == user:
+            return ProductForm
+        if user.has_perm("catalog.can_change_product_status") and user.has_perm(
+                "catalog.can_change_product_description") and user.has_perm(
+            "catalog.can_change_product_category"):
+            return ModeratorProductForm
+        raise PermissionDenied
+
     def form_valid(self, form):
-
-        original_obj = self.get_object()
-
-        # Проверяем и обновляем описание, если у пользователя есть разрешение
-        if self.request.user.has_perm('catalog.can_change_product_description'):
-            original_obj.description = form.cleaned_data.get('description', original_obj.description)
-
-        # Проверяем и обновляем категорию, если у пользователя есть разрешение
-        if self.request.user.has_perm('catalog.can_change_product_category'):
-            original_obj.category = form.cleaned_data.get('category', original_obj.category)
-
-        # Проверяем и обновляем статус, если у пользователя есть разрешение
-        if self.request.user.has_perm('catalog.can_change_product_status'):
-            original_obj.status = form.cleaned_data.get('status', original_obj.status)
-        # Оставляем другие поля неизменными, если нет разрешений
-        original_obj.name = original_obj.name
-        original_obj.price = original_obj.price
-        original_obj.image = original_obj.image
-
-        # Сохраняем объект
-        original_obj.save()
-
-        context = self.get_context_data(form=form)
+        context = self.get_context_data()
         formset = context["formset"]
         # Сохранение объекта
         self.object = form.save()
@@ -213,6 +201,22 @@ class ProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
             formset.save()
 
         return super().form_valid(form)
+
+
+class ModeratorProductUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ModeratorProductForm
+    template_name = 'catalog/moderator_product_form.html'
+    success_url = reverse_lazy('catalog:menu')
+    permission_required = (
+        'catalog.can_change_product_status',
+        'catalog.can_change_product_description',
+        'catalog.can_change_product_category',
+    )
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        return obj
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
