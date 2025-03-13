@@ -1,0 +1,46 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="card mt-4">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="productName" class="form-label">Название</label>
+                <input type="text" class="form-control" id="productName" name="name"
+                       placeholder="Введите название продукта" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="productDescription" class="form-label">Описание/Ингредиенты</label>
+                <textarea class="form-control" id="productDescription" name="description" rows="3"
+                          placeholder="Опишите продукт и укажите ингредиенты" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="productImage" class="form-label">Загрузите изображение продукта</label>
+                <input type="file" class="form-control" id="productImage" name="image" accept="image/*" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="productCategory" class="form-label">Категория</label>
+                <select class="form-select" id="productCategory" name="category" required>
+                    <option selected disabled>Выберите категорию</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="productPrice" class="form-label">Цена</label>
+                <input type="number" class="form-control" id="productPrice" name="price"
+                       placeholder="Введите цену в рублях" min="0" step="0.01" required>
+            </div>
+
+            <!-- Кнопка отправки -->
+            <button type="submit" class="btn btn-custom">Создать продукт</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

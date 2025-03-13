@@ -1,0 +1,56 @@
+{% extends 'catalog/base.html'%}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col">
+                        <div class="fw-bold">🏢Название организации:</div>
+                        "Aperol4ic"
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">📍Адрес:</div>
+                        г. Москва, ул. Примерная, д. 123, офис 45
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">☎️Телефон:</div>
+                        +7 (495) 123-45-67
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="d-inline-flex gap-1">
+        <a class="btn btn-custom m-2" data-bs-toggle="collapse" href="#collapseExample" role="button"
+           aria-expanded="false" aria-controls="collapseExample">
+            О нас
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            ООО "Aperol4ic" – это престижная коктейльная компания, специализирующаяся на создании уникальных и
+            оригинальных коктейлей для самых изысканных вкусов. Наша цель – предоставить нашим клиентам неповторимый
+            опыт, наполняя каждый коктейль искусством и креативностью.
+        </div>
+    </div>
+
+    <h2 class="mt-5">Контактные данные пользователей</h2>
+    <div class="card">
+        <div class="card-body">
+            {% if contacts %}
+            <ul class="list-group">
+                {% for contact in contacts %}
+                <li class="list-group-item">
+                    <strong>{{ contact.name }}</strong> ({{ contact.email }}) - {{ contact.created_at|date:"d M Y" }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Нет контактов.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

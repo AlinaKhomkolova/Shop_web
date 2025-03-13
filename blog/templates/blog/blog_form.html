@@ -1,0 +1,43 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="card mt-4">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="blogTitle" class="form-label">Заголовок</label>
+                <input type="text" class="form-control" id="blogTitle" name="title" value="{{ object.title }}"
+                       placeholder="" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="blogBody" class="form-label">Статья</label>
+                <textarea class="form-control" id="blogBody" name="body" value="{{ object.body }}" rows="3"
+                          placeholder="" required>{{ object.body }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="blogImage" class="form-label">Загрузите изображение привью</label>
+                <input type="file" class="form-control" id="blogImage" name="image" value="{{ object.image }}" accept="image/*">
+            </div>
+
+            <div class="mb-3">
+                <label for="blogIsPublished" class="form-label">Статья может быть опубликована?</label>
+                <select class="form-select" id="blogIsPublished" name="is_published" required>
+                    <option value="True">Да</option>
+                    <option value="False">Нет</option>
+                </select>
+            </div>
+            <!-- Кнопка отправки -->
+            <button type="submit" class="btn btn-custom">
+                {% if object %}
+                Сохранить
+                {% else %}
+                Создать
+                {% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
